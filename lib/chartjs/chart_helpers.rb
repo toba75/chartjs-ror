@@ -58,7 +58,7 @@ module Chartjs
             }
           })();
         
-        <<-END.squish.html_safe
+        END
       end
 
       canvas + script
