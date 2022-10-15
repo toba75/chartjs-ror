@@ -5,8 +5,7 @@ module Chartjs
      # for importmap
     initializer "chartjs.importmap" do |app|
       if defined?(Importmap)
-        app.config.assets.precompile << "chart.js"
-        app.config.assets.precompile << "Chart.bundle.js"
+        app.config.assets.precompile << "Chart.min.js"
       end
     end
     
