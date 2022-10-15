@@ -39,32 +39,26 @@ module Chartjs
 
       script = javascript_tag(nonce: true) do
         <<-END.squish.html_safe
-        (function() {
-          var initChart = function() {
-            var ctx = document.getElementById(#{element_id.to_json});
-            var chart = new Chart(ctx, {
-              type:    "#{camel_case type}",
-              data:    #{to_javascript_string data},
-              options: #{to_javascript_string opts},
-              plugins: #{to_javascript_string plugins},
-            });
-          };
-
-          if (typeof Chart !== "undefined" && Chart !== null) {
-            initChart();
-          }
-          else {
-            /* W3C standard */
-            if (window.addEventListener) {
-              window.addEventListener("load", initChart, false);
+          (function() {
+            if (document.documentElement.hasAttribute("data-turbolinks-preview")) return;
+            if (document.documentElement.hasAttribute("data-turbo-preview")) return;
+            var createChart = function() { 
+              var ctx = document.getElementById(#{element_id.to_json});
+              var chart = new Chart(ctx, {
+                type:    "#{camel_case type}",
+                data:    #{to_javascript_string data},
+                options: #{to_javascript_string opts},
+                plugins: #{to_javascript_string plugins},
+              });
+            };
+            if ("Chart" in window) {
+              createChart();
+            } else {
+              window.addEventListener("chart:load", createChart, true);
             }
-            /* IE */
-            else if (window.attachEvent) {
-              window.attachEvent("onload", initChart);
-            }
-          }
-        })();
-        END
+          })();
+        
+        <<-END.squish.html_safe
       end
 
       canvas + script
